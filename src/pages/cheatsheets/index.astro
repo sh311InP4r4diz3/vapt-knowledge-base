@@ -18,7 +18,7 @@ const cheatsheets = await getCollection('cheatsheets');
     {cheatsheets.map((sheet) => (
       <Card
         title={sheet.data.title}
-        href={`/cheatsheets/${sheet.slug}`}
+        href={`${import.meta.env.BASE_URL}cheatsheets/${sheet.slug}`}
         category={sheet.data.category}
         badgeType="success"
       >
