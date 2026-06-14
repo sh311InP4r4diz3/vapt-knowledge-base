@@ -17,7 +17,7 @@ const { Content } = await entry.render();
 <Layout title={entry.data.title} currentActive="methodologies" description={entry.data.description}>
   <!-- Back navigation and header -->
   <div class="back-nav" style="margin-bottom: 1.5rem;">
-    <a href="/methodologies" class="terminal-btn">&lt; BACK_TO_TIMELINE</a>
+    <a href={`${import.meta.env.BASE_URL}methodologies`} class="terminal-btn">&lt; BACK_TO_TIMELINE</a>
   </div>
 
   <div class="methodology-details-header cyber-card" style="margin-bottom: 2rem;">
