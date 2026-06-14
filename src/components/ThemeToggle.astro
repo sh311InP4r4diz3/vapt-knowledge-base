@@ -1,0 +1,63 @@
+---
+// ThemeToggle.astro
+---
+<button id="theme-toggle" class="theme-btn" aria-label="Toggle Theme">
+  <span class="btn-bracket">[</span>
+  <span id="theme-toggle-icon">SYS: DARK</span>
+  <span class="btn-bracket">]</span>
+</button>
+
+<style>
+  .theme-btn {
+    font-family: var(--font-mono);
+    background: transparent;
+    color: var(--accent);
+    border: none;
+    cursor: pointer;
+    font-size: 0.85rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.2rem;
+    padding: 0.3rem 0.6rem;
+    transition: all 0.2s ease;
+  }
+  
+  .theme-btn:hover {
+    text-shadow: 0 0 8px var(--accent);
+  }
+
+  .btn-bracket {
+    color: var(--text-muted);
+  }
+</style>
+
+<script>
+  const toggleBtn = document.getElementById('theme-toggle');
+  const toggleIcon = document.getElementById('theme-toggle-icon');
+  
+  const getTheme = () => {
+    if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
+      return localStorage.getItem('theme') || 'dark';
+    }
+    return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+  };
+
+  const setTheme = (theme: string) => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+    if (toggleIcon) {
+      toggleIcon.textContent = `SYS: ${theme.toUpperCase()}`;
+    }
+  };
+
+  // Set initial theme
+  const initialTheme = getTheme();
+  setTheme(initialTheme);
+
+  // Add click listener
+  toggleBtn?.addEventListener('click', () => {
+    const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    setTheme(newTheme);
+  });
+</script>

@@ -1,0 +1,54 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+export async function getStaticPaths() {
+  const methodologies = await getCollection('methodologies');
+  return methodologies.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+---
+
+<Layout title={entry.data.title} currentActive="methodologies" description={entry.data.description}>
+  <!-- Back navigation and header -->
+  <div class="back-nav" style="margin-bottom: 1.5rem;">
+    <a href="/methodologies" class="terminal-btn">&lt; BACK_TO_TIMELINE</a>
+  </div>
+
+  <div class="methodology-details-header cyber-card" style="margin-bottom: 2rem;">
+    <div class="header-metadata">
+      <span class="badge badge-purple">
+        {entry.data.phase}
+      </span>
+      <span class="mono text-muted">
+        PHASE ORDER: 0{entry.data.order}
+      </span>
+    </div>
+
+    <h1 class="glow-cyan" style="font-family: var(--font-mono); margin-top: 0.5rem; font-size: 2rem; margin-bottom: 1rem;">
+      {entry.data.title}
+    </h1>
+
+    <p style="color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 0;">
+      {entry.data.description}
+    </p>
+  </div>
+
+  <!-- Markdown prose content container -->
+  <article class="prose cyber-card" style="margin-bottom: 3rem;">
+    <Content />
+  </article>
+</Layout>
+
+<style>
+  .header-metadata {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+</style>

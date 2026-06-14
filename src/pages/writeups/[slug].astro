@@ -1,0 +1,99 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+export async function getStaticPaths() {
+  const writeups = await getCollection('writeups');
+  return writeups.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+---
+
+<Layout title={entry.data.title} currentActive="writeups" description={entry.data.description}>
+  <!-- Back navigation and header -->
+  <div class="back-nav" style="margin-bottom: 1.5rem;">
+    <a href="/writeups" class="terminal-btn">&lt; BACK_TO_LOGS</a>
+  </div>
+
+  <div class="writeup-details-header cyber-card" style="margin-bottom: 2rem;">
+    <div class="header-metadata">
+      <span class={`badge badge-${entry.data.platform === 'HackTheBox' ? 'success' : 'info'}`}>
+        {entry.data.platform}
+      </span>
+      <span class="mono text-muted">
+        POSTED: {entry.data.pubDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
+      </span>
+    </div>
+
+    <h1 class="glow-cyan" style="font-family: var(--font-mono); margin-top: 0.5rem; font-size: 2rem; margin-bottom: 1rem;">
+      {entry.data.title}
+    </h1>
+
+    <p style="color: var(--text-secondary); margin-bottom: 1.25rem; font-size: 0.95rem;">
+      {entry.data.description}
+    </p>
+
+    <!-- Specs table -->
+    <div class="specs-grid mono">
+      <div class="spec-item">
+        <span class="spec-label">TARGET_IP:</span>
+        <span class="spec-val glow-green" style="color: var(--color-green);">{entry.data.ipAddress || "N/A"}</span>
+      </div>
+      <div class="spec-item">
+        <span class="spec-label">DIFFICULTY:</span>
+        <span class={`spec-val diff-text-${entry.data.difficulty}`}>{entry.data.difficulty}</span>
+      </div>
+      <div class="spec-item">
+        <span class="spec-label">CATEGORY:</span>
+        <span class="spec-val" style="color: var(--color-cyan);">{entry.data.category}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Markdown prose content container -->
+  <article class="prose cyber-card" style="margin-bottom: 3rem;">
+    <Content />
+  </article>
+</Layout>
+
+<style>
+  .header-metadata {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .specs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+    border-top: 1px solid var(--border-color);
+    padding-top: 1rem;
+  }
+  
+  .spec-item {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .spec-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+  
+  .spec-val {
+    font-size: 0.9rem;
+    font-weight: bold;
+    margin-top: 0.2rem;
+  }
+
+  .diff-text-Easy { color: var(--color-green); }
+  .diff-text-Medium { color: var(--color-orange); }
+  .diff-text-Hard { color: var(--color-red); }
+  .diff-text-Insane { color: var(--color-purple); text-shadow: 0 0 5px var(--color-purple); }
+</style>

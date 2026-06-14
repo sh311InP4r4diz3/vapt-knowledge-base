@@ -1,0 +1,42 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Card from '../../components/Card.astro';
+import { getCollection } from 'astro:content';
+
+const cheatsheets = await getCollection('cheatsheets');
+---
+
+<Layout title="Cheat Sheets" currentActive="cheatsheets">
+  <div style="margin-bottom: 2rem;">
+    <h1 style="font-family: var(--font-mono); color: var(--color-cyan);" class="glow-cyan">&gt; INTERACTIVE_PAYLOAD_DATABASE</h1>
+    <p style="color: var(--text-secondary); margin-top: 0.5rem;">
+      Quick reference cheat sheets for shells, network commands, and exploit payloads with automatic copying.
+    </p>
+  </div>
+
+  <div class="cheatsheets-grid">
+    {cheatsheets.map((sheet) => (
+      <Card
+        title={sheet.data.title}
+        href={`/cheatsheets/${sheet.slug}`}
+        category={sheet.data.category}
+        badgeType="success"
+      >
+        <p style="margin-bottom: 1.25rem;">{sheet.data.description}</p>
+        <div style="text-align: right; border-top: 1px dashed var(--border-color); padding-top: 0.75rem;">
+          <span class="mono" style="color: var(--color-cyan); font-size: 0.85rem; font-weight: bold; cursor: pointer;">
+            OPEN_DATABASE_LOG &gt;
+          </span>
+        </div>
+      </Card>
+    ))}
+  </div>
+</Layout>
+
+<style>
+  .cheatsheets-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+    gap: 1.5rem;
+  }
+</style>

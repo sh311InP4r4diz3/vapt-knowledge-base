@@ -1,0 +1,292 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Card from '../../components/Card.astro';
+import { getCollection } from 'astro:content';
+
+const writeups = await getCollection('writeups');
+const sortedWriteups = writeups.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+// Get unique tags
+const allTags = [...new Set(writeups.flatMap((w) => w.data.tags))];
+---
+
+<Layout title="Writeups" currentActive="writeups">
+  <div style="margin-bottom: 2rem;">
+    <h1 style="font-family: var(--font-mono); color: var(--color-cyan);" class="glow-cyan">&gt; PENETRATION_TESTING_WRITEUPS</h1>
+    <p style="color: var(--text-secondary); margin-top: 0.5rem;">
+      Walkthroughs, flags captured, and system exploitation logs for TryHackMe and HackTheBox machines.
+    </p>
+  </div>
+
+  <!-- Interactive Filters Panel -->
+  <section class="filters-container cyber-card" style="margin-bottom: 2rem; padding: 1.25rem;">
+    <div class="filter-row">
+      <div class="search-wrapper">
+        <span class="search-prompt">root#</span>
+        <input 
+          type="text" 
+          id="search-input" 
+          placeholder="grep -i 'vulnerability or machine name'..." 
+          class="search-input mono"
+        />
+      </div>
+    </div>
+
+    <div class="filter-row buttons-row" style="margin-top: 1rem;">
+      <!-- Platform Filters -->
+      <div class="filter-group">
+        <span class="filter-label mono">PLATFORM:</span>
+        <div class="filter-btn-group">
+          <button class="filter-btn active" data-filter-type="platform" data-filter-value="all">ALL</button>
+          <button class="filter-btn" data-filter-type="platform" data-filter-value="HackTheBox">HTB</button>
+          <button class="filter-btn" data-filter-type="platform" data-filter-value="TryHackMe">THM</button>
+        </div>
+      </div>
+
+      <!-- Difficulty Filters -->
+      <div class="filter-group">
+        <span class="filter-label mono">DIFFICULTY:</span>
+        <div class="filter-btn-group">
+          <button class="filter-btn active" data-filter-type="difficulty" data-filter-value="all">ALL</button>
+          <button class="filter-btn" data-filter-type="difficulty" data-filter-value="Easy">EASY</button>
+          <button class="filter-btn" data-filter-type="difficulty" data-filter-value="Medium">MEDIUM</button>
+          <button class="filter-btn" data-filter-type="difficulty" data-filter-value="Hard">HARD</button>
+          <button class="filter-btn" data-filter-type="difficulty" data-filter-value="Insane">INSANE</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Writeups Grid -->
+  <section class="writeups-grid" id="writeups-list">
+    {sortedWriteups.map((w) => (
+      <div 
+        class="writeup-card-item" 
+        data-title={w.data.title.toLowerCase()}
+        data-platform={w.data.platform}
+        data-difficulty={w.data.difficulty}
+        data-tags={w.data.tags.join(',').toLowerCase()}
+        data-desc={w.data.description.toLowerCase()}
+      >
+        <Card 
+          title={w.data.title} 
+          href={`/writeups/${w.slug}`} 
+          category={w.data.platform} 
+          date={w.data.pubDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
+          badgeType={w.data.platform === 'HackTheBox' ? 'success' : 'info'}
+        >
+          <p style="margin-bottom: 0.8rem;">{w.data.description}</p>
+          <div class="card-footer-tags">
+            <span class="diff-badge badge mono diff-class" data-diff={w.data.difficulty}>{w.data.difficulty}</span>
+            <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
+              {w.data.tags.map((tag) => (
+                <span class="tag-badge">#{tag}</span>
+              ))}
+            </div>
+          </div>
+        </Card>
+      </div>
+    ))}
+  </section>
+
+  <style>
+    /* Filters CSS */
+    .filters-container {
+      background: var(--bg-glass);
+    }
+    
+    .filter-row {
+      display: flex;
+      width: 100%;
+    }
+    
+    .search-wrapper {
+      display: flex;
+      align-items: center;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      padding: 0.5rem 1rem;
+      width: 100%;
+    }
+    
+    .search-prompt {
+      color: var(--color-green);
+      font-family: var(--font-mono);
+      font-weight: bold;
+      margin-right: 0.75rem;
+    }
+    
+    .search-input {
+      background: transparent;
+      border: none;
+      color: var(--text-primary);
+      width: 100%;
+      outline: none;
+      font-size: 0.95rem;
+    }
+    
+    .buttons-row {
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+    
+    .filter-group {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    
+    .filter-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+    
+    .filter-btn-group {
+      display: flex;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    
+    .filter-btn {
+      background: var(--bg-primary);
+      border: none;
+      border-right: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      padding: 0.35rem 0.75rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .filter-btn:last-child {
+      border-right: none;
+    }
+    
+    .filter-btn:hover {
+      color: var(--color-cyan);
+      background: rgba(0, 240, 255, 0.05);
+    }
+    
+    .filter-btn.active {
+      background: var(--color-cyan);
+      color: #080c14;
+      font-weight: bold;
+    }
+
+    /* Grid Styling */
+    .writeups-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    @media (max-width: 500px) {
+      .writeups-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .card-footer-tags {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px dashed var(--border-color);
+      padding-top: 0.8rem;
+      margin-top: 0.8rem;
+      gap: 0.5rem;
+    }
+    
+    .tag-badge {
+      background: rgba(15, 23, 42, 0.3);
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      padding: 0.1rem 0.35rem;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-family: var(--font-mono);
+    }
+
+    /* Color difficulty tags based on value inside writeup */
+    .diff-badge[data-diff="Easy"] { background: rgba(57, 255, 20, 0.08); color: var(--color-green); border: 1px solid rgba(57,255,20,0.25); }
+    .diff-badge[data-diff="Medium"] { background: rgba(255, 153, 0, 0.08); color: var(--color-orange); border: 1px solid rgba(255,153,0,0.25); }
+    .diff-badge[data-diff="Hard"] { background: rgba(255, 0, 85, 0.08); color: var(--color-red); border: 1px solid rgba(255,0,85,0.25); }
+    .diff-badge[data-diff="Insane"] { background: rgba(176, 38, 255, 0.08); color: var(--color-purple); border: 1px solid rgba(176,38,255,0.25); box-shadow: 0 0 5px rgba(176,38,255,0.2); }
+  </style>
+
+  <!-- Client-side filtering script -->
+  <script>
+    let activeFilters = {
+      search: '',
+      platform: 'all',
+      difficulty: 'all'
+    };
+
+    const searchInput = document.getElementById('search-input') as HTMLInputElement;
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const cards = document.querySelectorAll('.writeup-card-item');
+
+    const filterWriteups = () => {
+      cards.forEach((card) => {
+        const item = card as HTMLElement;
+        const title = item.getAttribute('data-title') || '';
+        const desc = item.getAttribute('data-desc') || '';
+        const tags = item.getAttribute('data-tags') || '';
+        const platform = item.getAttribute('data-platform') || '';
+        const difficulty = item.getAttribute('data-difficulty') || '';
+
+        // Search text check
+        const matchesSearch = 
+          activeFilters.search === '' || 
+          title.includes(activeFilters.search) || 
+          desc.includes(activeFilters.search) || 
+          tags.includes(activeFilters.search);
+
+        // Platform filter check
+        const matchesPlatform = 
+          activeFilters.platform === 'all' || 
+          platform === activeFilters.platform;
+
+        // Difficulty filter check
+        const matchesDifficulty = 
+          activeFilters.difficulty === 'all' || 
+          difficulty === activeFilters.difficulty;
+
+        // Apply visible state
+        if (matchesSearch && matchesPlatform && matchesDifficulty) {
+          item.style.display = 'block';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    };
+
+    // Listen to Search Input
+    searchInput?.addEventListener('input', (e) => {
+      const target = e.target as HTMLInputElement;
+      activeFilters.search = target.value.trim().toLowerCase();
+      filterWriteups();
+    });
+
+    // Listen to Filter Buttons
+    filterButtons.forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        const button = e.currentTarget as HTMLButtonElement;
+        const filterType = button.getAttribute('data-filter-type') as 'platform' | 'difficulty';
+        const filterValue = button.getAttribute('data-filter-value') || '';
+
+        // Update active class within the group
+        const groupButtons = button.parentElement?.querySelectorAll('.filter-btn');
+        groupButtons?.forEach((b) => b.classList.remove('active'));
+        button.classList.add('active');
+
+        // Update active filter and run filtering
+        activeFilters[filterType] = filterValue;
+        filterWriteups();
+      });
+    });
+  </script>
+</Layout>

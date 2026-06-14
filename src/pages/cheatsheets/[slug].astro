@@ -1,0 +1,115 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+export async function getStaticPaths() {
+  const cheatsheets = await getCollection('cheatsheets');
+  return cheatsheets.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+---
+
+<Layout title={entry.data.title} currentActive="cheatsheets" description={entry.data.description}>
+  <!-- Back navigation and header -->
+  <div class="back-nav" style="margin-bottom: 1.5rem;">
+    <a href="/cheatsheets" class="terminal-btn">&lt; BACK_TO_DATABASE</a>
+  </div>
+
+  <div class="cheatsheet-details-header cyber-card" style="margin-bottom: 2rem;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+      <span class="badge badge-success">{entry.data.category}</span>
+      <span class="mono text-muted">PAYLOAD FILE</span>
+    </div>
+    <h1 class="glow-cyan" style="font-family: var(--font-mono); font-size: 2rem; margin: 0.5rem 0;">
+      {entry.data.title}
+    </h1>
+    <p style="color: var(--text-secondary); font-size: 0.95rem; margin-top: 0.5rem; margin-bottom: 0;">
+      {entry.data.description}
+    </p>
+  </div>
+
+  <!-- Content containing code blocks -->
+  <article class="prose cyber-card copy-handler" style="margin-bottom: 3rem;">
+    <Content />
+  </article>
+</Layout>
+
+<style>
+  /* Style tweaks for inline content code blocks */
+  :global(.copy-handler pre) {
+    position: relative;
+    padding-top: 2.2rem !important; /* Make room for the copy button */
+  }
+</style>
+
+<script>
+  // Script to inject "Copy" button in all code blocks
+  const copyHandler = () => {
+    const preBlocks = document.querySelectorAll('.copy-handler pre');
+    
+    preBlocks.forEach((preBlock) => {
+      const pre = preBlock as HTMLElement;
+      
+      // Avoid duplicate buttons
+      if (pre.querySelector('.copy-code-btn')) return;
+
+      const copyBtn = document.createElement('button');
+      copyBtn.className = 'copy-code-btn';
+      copyBtn.innerText = 'COPY';
+      
+      // Apply clean monospace styles to button
+      copyBtn.style.position = 'absolute';
+      copyBtn.style.top = '0.5rem';
+      copyBtn.style.right = '0.5rem';
+      copyBtn.style.background = 'rgba(8, 12, 20, 0.6)';
+      copyBtn.style.border = '1px solid var(--border-color)';
+      copyBtn.style.borderRadius = '4px';
+      copyBtn.style.padding = '0.2rem 0.5rem';
+      copyBtn.style.fontSize = '0.7rem';
+      copyBtn.style.fontFamily = 'var(--font-mono)';
+      copyBtn.style.color = 'var(--text-secondary)';
+      copyBtn.style.cursor = 'pointer';
+      copyBtn.style.transition = 'all 0.15s ease';
+
+      copyBtn.addEventListener('mouseenter', () => {
+        copyBtn.style.color = 'var(--color-cyan)';
+        copyBtn.style.borderColor = 'var(--color-cyan)';
+      });
+
+      copyBtn.addEventListener('mouseleave', () => {
+        copyBtn.style.color = 'var(--text-secondary)';
+        copyBtn.style.borderColor = 'var(--border-color)';
+      });
+
+      copyBtn.addEventListener('click', async () => {
+        const codeElement = pre.querySelector('code');
+        const codeText = codeElement ? codeElement.innerText : pre.innerText;
+        
+        try {
+          await navigator.clipboard.writeText(codeText.trim());
+          copyBtn.innerText = 'COPIED!';
+          copyBtn.style.color = 'var(--color-green)';
+          copyBtn.style.borderColor = 'var(--color-green)';
+          
+          setTimeout(() => {
+            copyBtn.innerText = 'COPY';
+            copyBtn.style.color = 'var(--text-secondary)';
+            copyBtn.style.borderColor = 'var(--border-color)';
+          }, 2000);
+        } catch (err) {
+          console.error('Failed to copy command text: ', err);
+        }
+      });
+
+      pre.appendChild(copyBtn);
+    });
+  };
+
+  // Run on load
+  copyHandler();
+</script>

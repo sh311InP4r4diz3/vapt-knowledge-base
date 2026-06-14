@@ -1,0 +1,194 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+const methodologies = await getCollection('methodologies');
+
+// Define penetration testing phases in order
+const phases = [
+  { name: 'Reconnaissance', desc: 'Active/Passive information gathering and host discovery.' },
+  { name: 'Exploitation', desc: 'Bypassing access controls to execute payloads and gain initial shell.' },
+  { name: 'Privilege Escalation', desc: 'Escalating access rights from low-privilege users to root/system.' },
+  { name: 'Post-Exploitation', desc: 'Pivoting, credentials harvesting, and maintaining access.' }
+];
+---
+
+<Layout title="Methodologies" currentActive="methodologies">
+  <div style="margin-bottom: 2rem;">
+    <h1 style="font-family: var(--font-mono); color: var(--color-cyan);" class="glow-cyan">&gt; VAPT_METHODOLOGIES</h1>
+    <p style="color: var(--text-secondary); margin-top: 0.5rem;">
+      Standard operating procedures and phased checklists for comprehensive penetration testing.
+    </p>
+  </div>
+
+  <!-- Phased Cyber-Timeline -->
+  <section class="timeline-container">
+    {phases.map((phase, idx) => {
+      // Find matching items for this phase
+      const phaseItems = methodologies
+        .filter((m) => m.data.phase === phase.name)
+        .sort((a, b) => a.data.order - b.data.order);
+
+      return (
+        <div class="timeline-block">
+          <!-- Timeline Marker -->
+          <div class="timeline-marker">
+            <span class="marker-dot"></span>
+            <span class="marker-line"></span>
+          </div>
+
+          <!-- Phase Content -->
+          <div class="timeline-content-card cyber-card">
+            <div class="phase-header">
+              <div class="phase-id mono">PHASE_0{idx + 1}</div>
+              <h2 class="phase-title glow-cyan">{phase.name}</h2>
+            </div>
+            <p class="phase-desc">{phase.desc}</p>
+
+            <div class="guides-sublist">
+              {phaseItems.length > 0 ? (
+                <ul style="list-style: none;">
+                  {phaseItems.map((item) => (
+                    <li class="guide-subitem">
+                      <a href={`/methodologies/${item.slug}`} class="guide-sublink">
+                        <span class="prompt">&gt;</span> {item.data.title}
+                      </a>
+                      <span class="text-muted mono" style="font-size: 0.8rem;">
+                        {item.data.description.slice(0, 50)}...
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p class="mono text-muted" style="font-size: 0.8rem; margin-top: 0.5rem; padding-left: 1rem;">
+                  // No guides drafted for this phase yet.
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+      );
+    })}
+  </section>
+</Layout>
+
+<style>
+  .timeline-container {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    padding-left: 2rem;
+    margin-top: 2rem;
+  }
+  
+  .timeline-block {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    position: relative;
+  }
+  
+  .timeline-marker {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    width: 20px;
+  }
+  
+  .marker-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--color-cyan);
+    border: 3px solid var(--bg-primary);
+    box-shadow: 0 0 8px var(--color-cyan);
+    z-index: 2;
+    margin-top: 1.5rem;
+  }
+  
+  .marker-line {
+    width: 2px;
+    height: 100%;
+    background: var(--border-color);
+    position: absolute;
+    top: 2rem;
+    bottom: -2rem;
+    z-index: 1;
+  }
+  
+  .timeline-block:last-child .marker-line {
+    display: none;
+  }
+  
+  .timeline-content-card {
+    flex-grow: 1;
+  }
+  
+  .phase-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.5rem;
+  }
+  
+  .phase-id {
+    color: var(--color-purple);
+    font-size: 0.8rem;
+    font-weight: 700;
+  }
+  
+  .phase-title {
+    font-family: var(--font-mono);
+    font-size: 1.3rem;
+  }
+  
+  .phase-desc {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .guides-sublist {
+    background: rgba(8, 12, 20, 0.4);
+    border-radius: 6px;
+    padding: 0.5rem;
+    border: 1px solid rgba(0, 240, 255, 0.05);
+  }
+  
+  .guide-subitem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0.75rem;
+    border-bottom: 1px dashed var(--border-color);
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  
+  .guide-subitem:last-child {
+    border-bottom: none;
+  }
+  
+  .guide-sublink {
+    font-family: var(--font-mono);
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+  
+  .guide-sublink:hover {
+    color: var(--color-cyan);
+    padding-left: 4px;
+  }
+  
+  .prompt {
+    color: var(--color-cyan);
+    font-weight: bold;
+    margin-right: 0.25rem;
+  }
+</style>

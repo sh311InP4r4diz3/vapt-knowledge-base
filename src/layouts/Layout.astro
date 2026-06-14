@@ -1,0 +1,135 @@
+---
+import '../styles/global.css';
+import ThemeToggle from '../components/ThemeToggle.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  currentActive?: 'home' | 'writeups' | 'methodologies' | 'cheatsheets';
+}
+
+const { 
+  title, 
+  description = "Cybersecurity VAPT Knowledge Base, writeups, methodologies, and cheat sheets.",
+  currentActive = 'home'
+} = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <meta name="generator" content={Astro.generator} />
+    
+    <!-- SEO Meta Tags -->
+    <title>{title} | VAPT Knowledge Base</title>
+    <meta name="description" content={description} />
+    <meta name="robots" content="index, follow" />
+    <meta property="og:title" content={`${title} | VAPT Knowledge Base`} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    
+    <!-- Code Syntax Highlight Style Adjustments -->
+    <style is:inline>
+      html[data-theme="light"] pre {
+        background-color: #f1f5f9 !important;
+        border-color: rgba(15, 23, 42, 0.1) !important;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Hacker Preloader Overlay -->
+    <div id="hacker-preloader" class="hacker-preloader">
+      <div class="preloader-content">
+        <div class="preloader-header">
+          <span class="mono-logo">VAPT//KB_ SYSTEM BOOT</span>
+        </div>
+        <div class="preloader-terminal">
+          <div class="terminal-line">[i] INITIALIZING BOOT PROTOCOL...</div>
+          <div class="terminal-line">[+] PARSING CONFIG COLLECTIONS...</div>
+          <div class="terminal-line">[+] SYNCHRONIZING SECURE DATABASE...</div>
+          <div class="terminal-line">[+] RESOLVING ENDPOINTS...</div>
+          <div class="terminal-line">[+] SECURE TUNNEL ESTABLISHED ON PORT 4321</div>
+          <div class="terminal-line loader-line">LOADING CORE INTERFACE: [##########] 100%</div>
+          <div class="terminal-line access-granted">ACCESS GRANTED // WELCOME OPERATOR</div>
+        </div>
+      </div>
+    </div>
+
+    <script is:inline>
+      (function() {
+        const preloader = document.getElementById('hacker-preloader');
+        if (preloader) {
+          if (!sessionStorage.getItem('vapt-kb-booted')) {
+            document.body.style.overflow = 'hidden';
+            const lines = preloader.querySelectorAll('.terminal-line');
+            lines.forEach((line, index) => {
+              setTimeout(() => {
+                line.classList.add('visible');
+              }, index * 200);
+            });
+            
+            setTimeout(() => {
+              preloader.classList.add('fade-out');
+              document.body.style.overflow = '';
+              sessionStorage.setItem('vapt-kb-booted', 'true');
+            }, lines.length * 200 + 400);
+          } else {
+            preloader.style.display = 'none';
+          }
+        }
+      })();
+    </script>
+
+    <div class="scanline"></div>
+    <div class="cyber-grid"></div>
+    
+    <header>
+      <nav class="navbar" id="main-nav">
+        <a href="/" class="logo">
+          <span class="logo-accent">VAPT</span>//KB<span class="logo-accent">_</span>
+        </a>
+        <ul class="nav-links">
+          <li>
+            <a href="/" class={currentActive === 'home' ? 'active' : ''}>
+              ~_home
+            </a>
+          </li>
+          <li>
+            <a href="/writeups" class={currentActive === 'writeups' ? 'active' : ''}>
+              ~_writeups
+            </a>
+          </li>
+          <li>
+            <a href="/methodologies" class={currentActive === 'methodologies' ? 'active' : ''}>
+              ~_methodology
+            </a>
+          </li>
+          <li>
+            <a href="/cheatsheets" class={currentActive === 'cheatsheets' ? 'active' : ''}>
+              ~_cheatsheets
+            </a>
+          </li>
+          <li>
+            <ThemeToggle />
+          </li>
+        </ul>
+      </nav>
+    </header>
+
+    <main class="container">
+      <slot />
+    </main>
+
+    <footer>
+      <div>
+        <span class="mono glow-green">[!] SECURE CONNECTION ESTABLISHED // STATUS: ACTIVE</span>
+      </div>
+      <div style="margin-top: 0.5rem;">
+        VAPT Knowledge Base &copy; {new Date().getFullYear()} // Built with Astro
+      </div>
+    </footer>
+  </body>
+</html>

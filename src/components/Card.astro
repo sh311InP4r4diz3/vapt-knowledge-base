@@ -1,0 +1,74 @@
+---
+interface Props {
+  title: string;
+  href?: string;
+  category?: string;
+  date?: string;
+  badgeType?: 'info' | 'success' | 'warning' | 'danger' | 'purple';
+}
+
+const { href, title, category, date, badgeType = 'info' } = Astro.props;
+---
+<div class="cyber-card">
+  <div class="card-header">
+    {category && <span class={`badge badge-${badgeType}`}>{category}</span>}
+    {date && <span class="card-date mono">{date}</span>}
+  </div>
+  <h3 class="card-title">
+    {href ? (
+      <a href={href} class="card-link">
+        <span class="cmd-prompt">&gt; </span>{title}
+      </a>
+    ) : (
+      <>
+        <span class="cmd-prompt">&gt; </span>{title}
+      </>
+    )}
+  </h3>
+  <div class="card-body">
+    <slot />
+  </div>
+</div>
+
+<style>
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+    font-size: 0.8rem;
+  }
+  
+  .card-date {
+    color: var(--text-muted);
+  }
+  
+  .card-title {
+    font-family: var(--font-mono);
+    font-size: 1.15rem;
+    margin-bottom: 0.75rem;
+    color: var(--text-primary);
+    line-height: 1.3;
+  }
+  
+  .cmd-prompt {
+    color: var(--color-cyan);
+    font-weight: bold;
+  }
+  
+  .card-link {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+  
+  .card-link:hover {
+    color: var(--color-cyan);
+    text-shadow: 0 0 8px rgba(0, 240, 255, 0.3);
+  }
+  
+  .card-body {
+    color: var(--text-secondary);
+    font-size: 0.92rem;
+  }
+</style>
