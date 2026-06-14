@@ -17,7 +17,7 @@ const { Content } = await entry.render();
 <Layout title={entry.data.title} currentActive="writeups" description={entry.data.description}>
   <!-- Back navigation and header -->
   <div class="back-nav" style="margin-bottom: 1.5rem;">
-    <a href="/writeups" class="terminal-btn">&lt; BACK_TO_LOGS</a>
+    <a href={`${import.meta.env.BASE_URL}writeups`} class="terminal-btn">&lt; BACK_TO_LOGS</a>
   </div>
 
   <div class="writeup-details-header cyber-card" style="margin-bottom: 2rem;">
