@@ -20,7 +20,7 @@ const {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="icon" type="image/png" href={`${import.meta.env.BASE_URL}favicon.png`} />
     <meta name="generator" content={Astro.generator} />
     
     <!-- SEO Meta Tags -->
@@ -88,27 +88,27 @@ const {
     
     <header>
       <nav class="navbar" id="main-nav">
-        <a href="/" class="logo">
+        <a href={import.meta.env.BASE_URL} class="logo">
           <span class="logo-accent">VAPT</span>//KB<span class="logo-accent">_</span>
         </a>
         <ul class="nav-links">
           <li>
-            <a href="/" class={currentActive === 'home' ? 'active' : ''}>
+            <a href={import.meta.env.BASE_URL} class={currentActive === 'home' ? 'active' : ''}>
               ~_home
             </a>
           </li>
           <li>
-            <a href="/writeups" class={currentActive === 'writeups' ? 'active' : ''}>
+            <a href={`${import.meta.env.BASE_URL}writeups`} class={currentActive === 'writeups' ? 'active' : ''}>
               ~_writeups
             </a>
           </li>
           <li>
-            <a href="/methodologies" class={currentActive === 'methodologies' ? 'active' : ''}>
+            <a href={`${import.meta.env.BASE_URL}methodologies`} class={currentActive === 'methodologies' ? 'active' : ''}>
               ~_methodology
             </a>
           </li>
           <li>
-            <a href="/cheatsheets" class={currentActive === 'cheatsheets' ? 'active' : ''}>
+            <a href={`${import.meta.env.BASE_URL}cheatsheets`} class={currentActive === 'cheatsheets' ? 'active' : ''}>
               ~_cheatsheets
             </a>
           </li>
