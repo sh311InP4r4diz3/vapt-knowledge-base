@@ -64,7 +64,7 @@ const sortedMethodologies = methodologies
         <h2 style="font-family: var(--font-mono); font-size: 1.5rem; color: var(--color-cyan);" class="glow-cyan">
           [//] RECENT_LOGS
         </h2>
-        <a href="/writeups" class="terminal-btn">VIEW_ALL_LOGS &gt;</a>
+        <a href={`${import.meta.env.BASE_URL}writeups`} class="terminal-btn">VIEW_ALL_LOGS &gt;</a>
       </div>
 
       <div class="cards-list">
@@ -73,7 +73,7 @@ const sortedMethodologies = methodologies
             <div style="margin-bottom: 1.5rem;">
               <Card 
                 title={w.data.title} 
-                href={`/writeups/${w.slug}`} 
+                href={`${import.meta.env.BASE_URL}writeups/${w.slug}`} 
                 category={w.data.platform} 
                 date={w.data.pubDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
                 badgeType={w.data.platform === 'HackTheBox' ? 'success' : 'info'}
@@ -107,14 +107,14 @@ const sortedMethodologies = methodologies
         <ul style="list-style: none;">
           {sortedMethodologies.map((m) => (
             <li class="guide-item">
-              <a href={`/methodologies/${m.slug}`} class="guide-link">
+              <a href={`${import.meta.env.BASE_URL}methodologies/${m.slug}`} class="guide-link">
                 <span class="prompt">&gt;</span> {m.data.title}
               </a>
               <span class="mono-badge">{m.data.phase}</span>
             </li>
           ))}
         </ul>
-        <a href="/methodologies" class="terminal-btn" style="width: 100%; justify-content: center; margin-top: 1rem;">
+        <a href={`${import.meta.env.BASE_URL}methodologies`} class="terminal-btn" style="width: 100%; justify-content: center; margin-top: 1rem;">
           ALL_METHODOLOGIES &gt;
         </a>
       </div>
@@ -130,14 +130,14 @@ const sortedMethodologies = methodologies
         <ul style="list-style: none;">
           {cheatsheets.map((c) => (
             <li class="guide-item" style="border-color: rgba(57, 255, 20, 0.15);">
-              <a href="/cheatsheets" class="guide-link" style="color: var(--text-primary);">
+              <a href={`${import.meta.env.BASE_URL}cheatsheets`} class="guide-link" style="color: var(--text-primary);">
                 <span class="prompt" style="color: var(--color-green);">&gt;</span> {c.data.title}
               </a>
               <span class="badge badge-success" style="font-size: 0.65rem;">{c.data.category}</span>
             </li>
           ))}
         </ul>
-        <a href="/cheatsheets" class="terminal-btn" style="width: 100%; justify-content: center; margin-top: 1rem; border-color: var(--color-green); color: var(--color-green);">
+        <a href={`${import.meta.env.BASE_URL}cheatsheets`} class="terminal-btn" style="width: 100%; justify-content: center; margin-top: 1rem; border-color: var(--color-green); color: var(--color-green);">
           ALL_CHEATSHEETS &gt;
         </a>
       </div>
