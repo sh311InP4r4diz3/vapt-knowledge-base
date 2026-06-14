@@ -50,7 +50,7 @@ const phases = [
                 <ul style="list-style: none;">
                   {phaseItems.map((item) => (
                     <li class="guide-subitem">
-                      <a href={`/methodologies/${item.slug}`} class="guide-sublink">
+                      <a href={`${import.meta.env.BASE_URL}methodologies/${item.slug}`} class="guide-sublink">
                         <span class="prompt">&gt;</span> {item.data.title}
                       </a>
                       <span class="text-muted mono" style="font-size: 0.8rem;">
