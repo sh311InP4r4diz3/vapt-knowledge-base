@@ -6,7 +6,7 @@ const writeups = defineCollection({
     title: z.string(),
     description: z.string(),
     pubDate: z.coerce.date(),
-    platform: z.enum(['HackTheBox', 'TryHackMe']),
+    platform: z.enum(['HackTheBox', 'TryHackMe', 'PicoCTF']),
     difficulty: z.enum(['Easy', 'Medium', 'Hard', 'Insane']),
     ipAddress: z.string().optional(),
     tags: z.array(z.string()),
